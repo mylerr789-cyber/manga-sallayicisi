@@ -13,32 +13,36 @@ export default function MangaCard({
   return (
     <Link
       href={`/manga/${manga.slug}`}
-      className="group overflow-hidden rounded-xl border border-line bg-card transition-colors hover:border-accent"
+      className="panel panel-hover group block"
     >
-      <div className="relative aspect-[3/4.2] w-full overflow-hidden bg-bg-soft">
+      <div className="relative aspect-[3/4.2] w-full overflow-hidden border-b-2 border-ink bg-bg-soft">
         {manga.cover ? (
           <Image
             src={fileUrl(manga, manga.cover, "300x420")}
             alt={manga.title}
             fill
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 200px"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
           />
         ) : (
-          <div className="grid h-full place-items-center text-4xl text-muted">📖</div>
+          <div className="halftone grid h-full place-items-center font-display text-2xl text-muted">
+            ?
+          </div>
         )}
         {manga.type && (
-          <span className="absolute left-2 top-2 rounded bg-accent px-1.5 py-0.5 text-[11px] font-semibold text-white">
+          <span className="absolute left-0 top-2 border-y-2 border-r-2 border-ink bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-white">
             {TYPE_LABELS[manga.type]}
           </span>
         )}
       </div>
-      <div className="p-2.5">
-        <h3 className="truncate text-sm font-semibold group-hover:text-accent transition-colors">
+      <div className="px-2.5 py-2">
+        <h3 className="truncate text-sm font-semibold transition-colors group-hover:text-accent">
           {manga.title}
         </h3>
         {latestChapter !== undefined && (
-          <p className="mt-0.5 text-xs text-muted">Bölüm {latestChapter}</p>
+          <p className="mt-0.5 font-mono text-[11px] text-muted">
+            BLM {latestChapter}
+          </p>
         )}
       </div>
     </Link>

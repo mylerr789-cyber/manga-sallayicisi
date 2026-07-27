@@ -14,25 +14,31 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
   );
 
   return (
-    <footer className="mt-16 border-t border-line bg-bg-soft">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center text-sm text-muted">
+    <footer className="halftone mt-20 border-t-2 border-ink bg-bg-soft">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-10 text-center">
+        <span className="font-display text-lg uppercase tracking-wide">
+          {settings.site_name}
+        </span>
         {socials.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-5 font-mono text-xs uppercase tracking-[0.15em] text-muted">
             {socials.map(([key, url]) => (
               <a
                 key={key}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
+                className="transition-colors hover:text-accent"
               >
                 {SOCIAL_LABELS[key] || key}
               </a>
             ))}
           </div>
         )}
-        <p>{settings.footer_text || settings.site_name}</p>
-        <a href="/admin" className="text-xs opacity-60 hover:opacity-100">
+        <p className="text-sm text-muted">{settings.footer_text}</p>
+        <a
+          href="/admin"
+          className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted/60 transition-colors hover:text-accent"
+        >
           Yönetim
         </a>
       </div>

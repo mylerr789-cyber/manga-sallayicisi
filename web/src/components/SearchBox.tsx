@@ -18,8 +18,8 @@ export default function SearchBox() {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Seri ara..."
-        className="w-36 sm:w-56 rounded-lg border border-line bg-card px-3 py-1.5 text-sm outline-none placeholder:text-muted focus:border-accent transition-colors"
+        placeholder="Seri ara"
+        className="w-32 border-2 border-ink bg-card px-3 py-1.5 font-mono text-xs uppercase tracking-wider outline-none transition-colors placeholder:text-muted focus:border-accent sm:w-52"
       />
     </form>
   );

@@ -27,7 +27,6 @@ export default async function HomePage() {
     // PB kapalıysa boş durumla render et
   }
 
-  // Son bölümlerden seri bazında uniq son güncellenen 12 seri
   const seen = new Set<string>();
   const latest: { manga: Manga; chapterNumber: number }[] = [];
   for (const ch of latestChapters) {
@@ -39,20 +38,23 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {featured.length > 0 && <HeroSlider mangas={featured.slice(0, 5)} />}
 
       <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold">Son Güncellenen Seriler</h2>
-          <Link href="/library" className="text-sm text-accent hover:underline">
-            Tümünü Gör →
+        <div className="mb-5 flex items-end justify-between">
+          <h2 className="section-title text-2xl">Son Güncellenen</h2>
+          <Link
+            href="/library"
+            className="font-mono text-xs uppercase tracking-[0.15em] text-accent hover:underline"
+          >
+            Tümü →
           </Link>
         </div>
         {latest.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {latest.map(({ manga, chapterNumber }) => (
               <MangaCard key={manga.id} manga={manga} latestChapter={chapterNumber} />
             ))}
@@ -62,8 +64,8 @@ export default async function HomePage() {
 
       {allMangas.length > 0 && (
         <section>
-          <h2 className="mb-4 text-xl font-bold">Tüm Seriler</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <h2 className="section-title mb-5 text-2xl">Tüm Seriler</h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {allMangas.map((m) => (
               <MangaCard key={m.id} manga={m} />
             ))}
@@ -76,12 +78,14 @@ export default async function HomePage() {
 
 function EmptyState() {
   return (
-    <div className="rounded-xl border border-dashed border-line p-10 text-center text-muted">
-      <p className="text-3xl">📚</p>
-      <p className="mt-2 font-medium">Henüz seri eklenmemiş</p>
-      <p className="mt-1 text-sm">
-        Yönetim panelinden ilk serini ekleyerek başla:{" "}
-        <Link href="/admin" className="text-accent hover:underline">/admin</Link>
+    <div className="panel halftone p-12 text-center">
+      <p className="font-display text-3xl uppercase">Raflar henüz boş</p>
+      <p className="mt-2 text-sm text-muted">
+        İlk seriyi eklemek için{" "}
+        <Link href="/admin" className="text-accent hover:underline">
+          yönetim paneline
+        </Link>{" "}
+        git.
       </p>
     </div>
   );

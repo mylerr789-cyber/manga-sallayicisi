@@ -68,8 +68,8 @@ export default async function LibraryPage({
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <h1 className="text-2xl font-bold">Kütüphane</h1>
-        <span className="text-sm text-muted">{totalItems} seri</span>
+        <h1 className="section-title text-3xl">Kütüphane</h1>
+        <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted">{totalItems} seri</span>
       </div>
 
       <Suspense>
@@ -77,11 +77,12 @@ export default async function LibraryPage({
       </Suspense>
 
       {items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-line p-10 text-center text-muted">
-          Sonuç bulunamadı.
+        <div className="panel halftone p-12 text-center">
+          <p className="font-display text-2xl uppercase">Sonuç yok</p>
+          <p className="mt-2 text-sm text-muted">Aramayı veya filtreleri değiştirip tekrar dene.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {items.map((m) => (
             <MangaCard key={m.id} manga={m} />
           ))}
@@ -89,17 +90,17 @@ export default async function LibraryPage({
       )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
+        <div className="flex items-center justify-center gap-3 pt-4">
           {page > 1 && (
-            <Link href={pageLink(page - 1)} className="rounded-lg border border-line bg-card px-3 py-1.5 text-sm hover:border-accent">
+            <Link href={pageLink(page - 1)} className="btn-ghost">
               ← Önceki
             </Link>
           )}
-          <span className="px-2 text-sm text-muted">
-            Sayfa {page} / {totalPages}
+          <span className="font-mono text-xs uppercase tracking-widest text-muted">
+            {page} / {totalPages}
           </span>
           {page < totalPages && (
-            <Link href={pageLink(page + 1)} className="rounded-lg border border-line bg-card px-3 py-1.5 text-sm hover:border-accent">
+            <Link href={pageLink(page + 1)} className="btn-ghost">
               Sonraki →
             </Link>
           )}

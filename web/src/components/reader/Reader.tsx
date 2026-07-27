@@ -85,14 +85,14 @@ export default function Reader({
     <div className="-mx-4 -my-6">
       {/* üst bar */}
       <div
-        className={`sticky top-14 z-30 border-b border-line bg-bg-soft/95 backdrop-blur transition-transform ${
+        className={`sticky top-16 z-30 border-b-2 border-ink bg-bg/95 backdrop-blur transition-transform ${
           barVisible ? "" : "-translate-y-full"
         }`}
       >
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-2 px-4 py-2 text-sm">
           <Link
             href={`/manga/${manga.slug}`}
-            className="max-w-40 truncate font-semibold hover:text-accent sm:max-w-none"
+            className="max-w-40 truncate font-display uppercase tracking-wide hover:text-accent sm:max-w-none"
           >
             {manga.title}
           </Link>
@@ -100,7 +100,7 @@ export default function Reader({
           <select
             value={chapter.id}
             onChange={(e) => router.push(`/read/${e.target.value}`)}
-            className="rounded-lg border border-line bg-card px-2 py-1 text-sm outline-none focus:border-accent"
+            className="border-2 border-ink bg-card px-2 py-1 font-mono text-xs outline-none focus:border-accent"
           >
             {[...siblings].reverse().map((s) => (
               <option key={s.id} value={s.id}>
@@ -113,7 +113,7 @@ export default function Reader({
           <div className="ml-auto flex items-center gap-1.5">
             <button
               onClick={() => changeMode(mode === "webtoon" ? "paged" : "webtoon")}
-              className="rounded-lg border border-line bg-card px-2.5 py-1 text-xs hover:border-accent"
+              className="border-2 border-ink bg-accent px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-white"
               title="Okuma modu"
             >
               {mode === "webtoon" ? "▤ Dikey" : "▭ Sayfalı"}
@@ -121,14 +121,14 @@ export default function Reader({
             <button
               onClick={goPrev}
               disabled={!prev && !(mode === "paged" && page > 0)}
-              className="rounded-lg border border-line bg-card px-2.5 py-1 text-xs hover:border-accent disabled:opacity-40"
+              className="border-2 border-ink bg-card px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide transition-colors hover:border-accent disabled:opacity-40"
             >
               ← Önceki
             </button>
             <button
               onClick={goNext}
               disabled={!next && !(mode === "paged" && page < pageUrls.length - 1)}
-              className="rounded-lg border border-line bg-card px-2.5 py-1 text-xs hover:border-accent disabled:opacity-40"
+              className="border-2 border-ink bg-card px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide transition-colors hover:border-accent disabled:opacity-40"
             >
               Sonraki →
             </button>
@@ -179,7 +179,7 @@ export default function Reader({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={pageUrls[page + 1]} alt="" className="hidden" />
           )}
-          <p className="py-3 text-center text-sm text-muted">
+          <p className="py-3 text-center font-mono text-xs uppercase tracking-widest text-muted">
             {page + 1} / {pageUrls.length}
           </p>
           {page === pageUrls.length - 1 && <ChapterEnd next={next} manga={manga} />}
@@ -195,14 +195,14 @@ function ChapterEnd({ next, manga }: { next: Chapter | null; manga: Manga }) {
       {next ? (
         <Link
           href={`/read/${next.id}`}
-          className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="btn-ink"
         >
           Sonraki Bölüm (Bölüm {next.number}) →
         </Link>
       ) : (
-        <p className="text-sm text-muted">Son bölümdesin 🎉</p>
+        <p className="text-sm text-muted">Serinin sonuna geldin — yeni bölümler için takipte kal.</p>
       )}
-      <Link href={`/manga/${manga.slug}`} className="text-sm text-accent hover:underline">
+      <Link href={`/manga/${manga.slug}`} className="font-mono text-xs uppercase tracking-[0.15em] text-accent hover:underline">
         Bölüm listesine dön
       </Link>
     </div>

@@ -60,49 +60,45 @@ export default async function MangaPage({
   const genres = Array.isArray(manga.genres) ? manga.genres : [];
 
   return (
-    <div className="space-y-8">
-      <section className="flex flex-col gap-6 sm:flex-row">
-        <div className="relative mx-auto aspect-[3/4.2] w-48 shrink-0 overflow-hidden rounded-xl border border-line sm:mx-0 sm:w-56">
-          {manga.cover ? (
-            <Image
-              src={fileUrl(manga, manga.cover, "600x0")}
-              alt={manga.title}
-              fill
-              sizes="224px"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="grid h-full place-items-center bg-card text-5xl">📖</div>
-          )}
+    <div className="space-y-10">
+      <section className="flex flex-col gap-8 sm:flex-row">
+        <div className="relative mx-auto w-52 shrink-0 sm:mx-0 sm:w-60">
+          <div className="panel relative aspect-[3/4.2] overflow-hidden" style={{ transform: "rotate(-1.5deg)" }}>
+            {manga.cover ? (
+              <Image
+                src={fileUrl(manga, manga.cover, "600x0")}
+                alt={manga.title}
+                fill
+                sizes="240px"
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="halftone grid h-full place-items-center font-display text-5xl text-muted">?</div>
+            )}
+          </div>
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {manga.type && (
-              <span className="rounded bg-accent px-2 py-0.5 text-xs font-semibold text-white">
-                {TYPE_LABELS[manga.type]}
-              </span>
-            )}
-            {manga.status && (
-              <span className="rounded border border-line bg-card px-2 py-0.5 text-xs text-muted">
-                {STATUS_LABELS[manga.status]}
-              </span>
-            )}
+          <div className="flex flex-wrap gap-3 font-mono text-[11px] uppercase tracking-[0.18em]">
+            {manga.type && <span className="text-accent">{TYPE_LABELS[manga.type]}</span>}
+            {manga.status && <span className="text-muted">{STATUS_LABELS[manga.status]}</span>}
           </div>
-          <h1 className="mt-2 text-3xl font-bold">{manga.title}</h1>
-          <div className="mt-2 space-y-0.5 text-sm text-muted">
-            {manga.author && <p>Yazar: {manga.author}</p>}
-            {manga.artist && manga.artist !== manga.author && <p>Çizer: {manga.artist}</p>}
+          <h1 className="mt-2 font-display text-4xl uppercase leading-[0.95] tracking-wide sm:text-5xl">
+            {manga.title}
+          </h1>
+          <div className="mt-3 space-y-0.5 font-mono text-xs text-muted">
+            {manga.author && <p>Yazar — {manga.author}</p>}
+            {manga.artist && manga.artist !== manga.author && <p>Çizer — {manga.artist}</p>}
           </div>
 
           {genres.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="mt-4 flex flex-wrap gap-2">
               {genres.map((g) => (
                 <Link
                   key={g}
                   href={`/library?genre=${encodeURIComponent(g)}`}
-                  className="rounded-full border border-line bg-card px-2.5 py-0.5 text-xs text-muted hover:border-accent hover:text-fg transition-colors"
+                  className="border-2 border-ink bg-card px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-fg"
                 >
                   {g}
                 </Link>
@@ -111,26 +107,20 @@ export default async function MangaPage({
           )}
 
           {manga.description && (
-            <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted">
+            <p className="mt-5 max-w-xl whitespace-pre-line text-sm leading-relaxed text-muted">
               {manga.description}
             </p>
           )}
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-3">
             {first && (
-              <Link
-                href={`/read/${first.id}`}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-              >
-                İlk Bölüm
+              <Link href={`/read/${first.id}`} className="btn-ink">
+                İlk bölümü oku
               </Link>
             )}
             {last && last.id !== first?.id && (
-              <Link
-                href={`/read/${last.id}`}
-                className="rounded-lg border border-line bg-card px-4 py-2 text-sm font-semibold hover:border-accent"
-              >
-                Son Bölüm ({last.number})
+              <Link href={`/read/${last.id}`} className="btn-ghost">
+                Son bölüm · {last.number}
               </Link>
             )}
           </div>
@@ -138,26 +128,28 @@ export default async function MangaPage({
       </section>
 
       <section>
-        <h2 className="mb-3 text-xl font-bold">Bölümler ({chapters.length})</h2>
+        <h2 className="section-title mb-4 text-2xl">
+          Bölümler
+          <span className="font-mono text-xs tracking-widest text-muted">({chapters.length})</span>
+        </h2>
         {chapters.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line p-8 text-center text-sm text-muted">
-            Henüz bölüm yayınlanmamış.
-          </p>
+          <div className="panel halftone p-10 text-center">
+            <p className="font-display text-xl uppercase">Henüz bölüm yok</p>
+            <p className="mt-1 text-sm text-muted">Yeni bölümler yayınlandığında burada listelenir.</p>
+          </div>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-line">
-            {chapters.map((ch, idx) => (
+          <div className="panel divide-y-2 divide-line">
+            {chapters.map((ch) => (
               <Link
                 key={ch.id}
                 href={`/read/${ch.id}`}
-                className={`flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-card-hover ${
-                  idx % 2 === 0 ? "bg-card" : "bg-bg-soft"
-                }`}
+                className="group flex items-center gap-4 px-4 py-3 transition-colors hover:bg-card-hover"
               >
-                <span className="font-medium">
-                  Bölüm {ch.number}
-                  {ch.title && <span className="ml-2 font-normal text-muted">{ch.title}</span>}
+                <span className="font-display text-lg text-accent">{ch.number}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-medium group-hover:text-accent">
+                  {ch.title || `Bölüm ${ch.number}`}
                 </span>
-                <span className="text-xs text-muted">
+                <span className="font-mono text-[11px] uppercase text-muted">
                   {new Date(ch.created).toLocaleDateString("tr-TR")}
                 </span>
               </Link>

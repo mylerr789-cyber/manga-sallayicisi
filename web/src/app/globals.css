@@ -1,25 +1,32 @@
 @import "tailwindcss";
 
+/* ── Baskı & Mürekkep tema ─────────────────────────── */
 :root,
 [data-theme="dark"] {
-  --bg: #0b0d12;
-  --bg-soft: #12151d;
-  --card: #171b25;
-  --card-hover: #1e2330;
-  --border: #262c3b;
-  --text: #e8eaf0;
-  --text-muted: #9aa3b5;
+  --bg: #0d0e13;
+  --bg-soft: #13151c;
+  --card: #181b24;
+  --card-hover: #1f2330;
+  --border: #2b303f;
+  --ink: #f4f1e8;
+  --text: #f4f1e8;
+  --text-muted: #9aa1b3;
   --accent: #e11d48;
+  --dot: rgba(244, 241, 232, 0.13);
+  --panel-shadow: rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] {
-  --bg: #f5f6f8;
-  --bg-soft: #ffffff;
-  --card: #ffffff;
-  --card-hover: #f0f1f5;
-  --border: #dfe2ea;
-  --text: #171921;
-  --text-muted: #5b6272;
+  --bg: #f6f4ee;
+  --bg-soft: #fffdf7;
+  --card: #fffdf7;
+  --card-hover: #f0ede4;
+  --border: #1a1a20;
+  --ink: #1a1a20;
+  --text: #1a1a20;
+  --text-muted: #5c6070;
+  --dot: rgba(26, 26, 32, 0.16);
+  --panel-shadow: rgba(26, 26, 32, 0.22);
 }
 
 @theme inline {
@@ -31,6 +38,10 @@
   --color-fg: var(--text);
   --color-muted: var(--text-muted);
   --color-accent: var(--accent);
+  --color-ink: var(--ink);
+  --font-display: var(--font-anton), Impact, sans-serif;
+  --font-sans: var(--font-plex), system-ui, sans-serif;
+  --font-mono: var(--font-plexmono), ui-monospace, monospace;
 }
 
 html {
@@ -40,7 +51,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-plex), system-ui, sans-serif;
 }
 
 ::selection {
@@ -48,8 +59,113 @@ body {
   color: #fff;
 }
 
-/* ince scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── İmza: manga paneli ────────────────────────────── */
+.panel {
+  border: 2px solid var(--ink);
+  background: var(--card);
+  box-shadow: 4px 4px 0 var(--panel-shadow);
+}
+
+.panel-hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.panel-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--accent);
+}
+
+/* screentone dokusu */
+.halftone {
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
+  background-size: 9px 9px;
+}
+
+/* mono etiket (bölüm no, tarih, eyebrow) */
+.eyebrow {
+  font-family: var(--font-plexmono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* bölüm başlığı: skew mürekkep bloğu + Anton */
+.section-title {
+  font-family: var(--font-anton), Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.section-title::before {
+  content: "";
+  width: 0.5em;
+  height: 0.95em;
+  background: var(--accent);
+  transform: skewX(-14deg);
+  flex-shrink: 0;
+}
+
+/* butonlar */
+.btn-ink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--ink);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.55rem 1.15rem;
+  box-shadow: 4px 4px 0 var(--panel-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-ink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--panel-shadow);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.55rem 1.15rem;
+  box-shadow: 4px 4px 0 var(--panel-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-ghost:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

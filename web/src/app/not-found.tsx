@@ -2,16 +2,15 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="grid min-h-[50vh] place-items-center text-center">
-      <div>
-        <p className="text-6xl font-bold text-accent">404</p>
-        <p className="mt-3 text-lg font-medium">Sayfa bulunamadı</p>
-        <p className="mt-1 text-sm text-muted">Aradığın içerik kaldırılmış veya hiç var olmamış olabilir.</p>
-        <Link
-          href="/"
-          className="mt-5 inline-block rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-        >
-          Ana Sayfaya Dön
+    <div className="grid min-h-[55vh] place-items-center">
+      <div className="panel halftone max-w-md p-10 text-center">
+        <p className="font-display text-7xl uppercase text-accent">404</p>
+        <p className="mt-3 font-display text-xl uppercase">Bu sayfa basılmamış</p>
+        <p className="mt-2 text-sm text-muted">
+          Aradığın içerik kaldırılmış veya hiç var olmamış olabilir.
+        </p>
+        <Link href="/" className="btn-ink mt-6">
+          Ana sayfaya dön
         </Link>
       </div>
     </div>
