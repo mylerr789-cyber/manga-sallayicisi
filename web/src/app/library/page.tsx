@@ -28,10 +28,14 @@ export default async function LibraryPage({
     filters.push(`title ~ {:q}`);
     fparams.q = sp.q;
   }
-  if (sp.genre) {
-    filters.push(`genres ~ {:genre}`);
-    fparams.genre = sp.genre;
-  }
+  // çoklu tür: "Aksiyon,Komedi" → her biri ayrı AND koşulu
+  (sp.genre || "")
+    .split(",")
+    .filter(Boolean)
+    .forEach((g, i) => {
+      filters.push(`genres ~ {:g${i}}`);
+      fparams[`g${i}`] = g;
+    });
   if (sp.status) {
     filters.push(`status = {:status}`);
     fparams.status = sp.status;
