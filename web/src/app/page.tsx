@@ -19,9 +19,8 @@ export default async function HomePage() {
       settings.hero_enabled
         ? pb.collection("mangas").getFullList<Manga>({ filter: "featured = true", sort: "-created" })
         : Promise.resolve([]),
-      pb.collection("chapters").getList<Chapter>(1, 40, { sort: "-created", expand: "manga" })
-        .then((r) => r.items),
-      pb.collection("mangas").getList<Manga>(1, 18, { sort: "-created" }).then((r) => r.items),
+      pb.collection("chapters").getFullList<Chapter>({ sort: "-created", expand: "manga" }),
+      pb.collection("mangas").getFullList<Manga>({ sort: "-created" }).then((l) => l.slice(0, 18)),
     ]);
   } catch {
     // PB kapalıysa boş durumla render et
