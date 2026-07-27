@@ -6,7 +6,7 @@ import { GENRES, STATUS_LABELS, TYPE_LABELS } from "@/lib/types";
 
 const SORT_LABELS: Record<string, string> = { new: "En yeni", az: "A–Z", za: "Z–A" };
 
-export default function FilterBar() {
+export default function FilterBar({ genres: genreOptions = GENRES }: { genres?: string[] }) {
   const router = useRouter();
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") || "");
@@ -125,7 +125,7 @@ export default function FilterBar() {
         </button>
         {genresOpen && (
           <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {GENRES.map((g) => (
+            {genreOptions.map((g) => (
               <button key={g} onClick={() => toggleGenre(g)} className={chip(activeGenres.includes(g))}>
                 {g}
               </button>

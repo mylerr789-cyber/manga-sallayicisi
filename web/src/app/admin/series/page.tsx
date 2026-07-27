@@ -4,13 +4,16 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { pbClient } from "@/lib/pb-client";
 import { fileUrl } from "@/lib/pb";
-import { GENRES, STATUS_LABELS, TYPE_LABELS, type Manga } from "@/lib/types";
+import { GENRES, STATUS_LABELS, TYPE_LABELS, genreList, type Manga } from "@/lib/types";
 
 function slugify(s: string): string {
-  const map: Record<string, string> = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u" };
   return s
+    .replace(/İ/g, "i")
+    .replace(/I/g, "i")
     .toLowerCase()
-    .replace(/[çğıöşü]/g, (c) => map[c] || c)
+    .normalize("NFD") // aksanları ayır (ç→c+̧, ğ→g+̆ ...)
+    .replace(/[\u0300-\u036f]/g, "") // birleşik işaretleri at
+    .replace(/ı/g, "i")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
@@ -20,6 +23,7 @@ export default function SeriesAdmin() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [editing, setEditing] = useState<Manga | "new" | null>(null);
   const [loading, setLoading] = useState(true);
+  const [genreOptions, setGenreOptions] = useState<string[]>(GENRES);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -31,6 +35,8 @@ export default function SeriesAdmin() {
       const c: Record<string, number> = {};
       for (const ch of chapters) c[ch.manga] = (c[ch.manga] || 0) + 1;
       setCounts(c);
+      const s = await pb.collection("settings").getList<{ genres?: string[] | null }>(1, 1);
+      if (s.items[0]) setGenreOptions(genreList(s.items[0]));
     } catch {}
     setLoading(false);
   }, []);
@@ -120,6 +126,7 @@ export default function SeriesAdmin() {
       {editing && (
         <MangaForm
           manga={editing === "new" ? null : editing}
+          genreOptions={genreOptions}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
@@ -133,10 +140,12 @@ export default function SeriesAdmin() {
 
 function MangaForm({
   manga,
+  genreOptions,
   onClose,
   onSaved,
 }: {
   manga: Manga | null;
+  genreOptions: string[];
   onClose: () => void;
   onSaved: () => void;
 }) {
@@ -181,8 +190,13 @@ function MangaForm({
       else await pb.collection("mangas").create(fd);
       onSaved();
     } catch (ex) {
+      // PB alan hatalarını oku (ör. slug: validation_not_unique)
+      const rd = (ex as { response?: { data?: Record<string, { message?: string }> } })?.response?.data;
+      const fields = rd
+        ? Object.entries(rd).map(([k, v]) => `${k}: ${v?.message || "geçersiz"}`).join(" · ")
+        : "";
       const msg = ex instanceof Error ? ex.message : "Kayıt başarısız";
-      setErr(`Hata: ${msg} (slug benzersiz olmalı, sadece a-z 0-9 -)`);
+      setErr(`Hata: ${fields || msg}`);
     } finally {
       setBusy(false);
     }
@@ -279,7 +293,7 @@ function MangaForm({
           <div>
             <p className="mb-1.5 text-xs font-semibold uppercase text-muted">Türler</p>
             <div className="flex flex-wrap gap-1.5">
-              {GENRES.map((g) => {
+              {genreOptions.map((g) => {
                 const active = genres.includes(g);
                 return (
                   <button

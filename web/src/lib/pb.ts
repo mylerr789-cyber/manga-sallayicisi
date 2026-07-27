@@ -35,6 +35,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   items_per_page: 24,
   footer_text: "",
   social_links: null,
+  genres: null,
   updated: "",
 };
 

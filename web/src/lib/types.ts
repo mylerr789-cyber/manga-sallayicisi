@@ -43,6 +43,7 @@ export interface SiteSettings {
   items_per_page: number;
   footer_text: string;
   social_links: Record<string, string> | null;
+  genres: string[] | null;
   updated: string;
 }
 
@@ -64,4 +65,9 @@ export const GENRES = [
   "Aksiyon", "Macera", "Komedi", "Dram", "Fantastik", "Korku",
   "Gizem", "Romantizm", "Bilim Kurgu", "Spor", "Doğaüstü", "Psikolojik",
   "Tarihi", "Dövüş Sanatları", "İsekai", "Okul", "Askeri", "Yaşamdan Kesitler",
-];
+]; // varsayılan — ayarlardan (settings.genres) özelleştirilebilir
+
+/** Ayarlardaki tür listesi; boşsa varsayılana düşer. */
+export function genreList(settings: { genres?: string[] | null }): string[] {
+  return settings.genres?.length ? settings.genres : GENRES;
+}

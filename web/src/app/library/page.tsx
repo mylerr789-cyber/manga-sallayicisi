@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { newPB, getSettings } from "@/lib/pb";
 import type { Manga } from "@/lib/types";
+import { genreList } from "@/lib/types";
 import MangaCard from "@/components/MangaCard";
 import FilterBar from "@/components/FilterBar";
 
@@ -77,7 +78,7 @@ export default async function LibraryPage({
       </div>
 
       <Suspense>
-        <FilterBar />
+        <FilterBar genres={genreList(settings)} />
       </Suspense>
 
       {items.length === 0 ? (

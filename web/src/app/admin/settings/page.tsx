@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { pbClient } from "@/lib/pb-client";
 import { fileUrl } from "@/lib/pb";
 import type { SiteSettings } from "@/lib/types";
+import { GENRES } from "@/lib/types";
 
 const SOCIAL_KEYS = ["discord", "twitter", "instagram", "youtube", "telegram"];
 
@@ -13,6 +14,7 @@ export default function SettingsAdmin() {
   const [logoPreview, setLogoPreview] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [newGenre, setNewGenre] = useState("");
 
   useEffect(() => {
     pbClient()
@@ -48,6 +50,7 @@ export default function SettingsAdmin() {
       fd.set("items_per_page", String(rec.items_per_page));
       fd.set("footer_text", rec.footer_text);
       fd.set("social_links", JSON.stringify(rec.social_links || {}));
+      fd.set("genres", JSON.stringify(rec.genres?.length ? rec.genres : GENRES));
       if (logo) fd.set("logo", logo);
       await pbClient().collection("settings").update(rec.id, fd);
       setMsg("✓ Kaydedildi — site tarafına yansıması 1 dakikayı bulabilir.");
@@ -158,6 +161,62 @@ export default function SettingsAdmin() {
         <div>
           <label className={label}>Footer Metni</label>
           <input value={rec.footer_text} onChange={(e) => set("footer_text", e.target.value)} className={input} />
+        </div>
+
+        <div>
+          <label className={label}>Türler</label>
+          <p className="mb-2 text-xs text-muted">
+            Seri formunda ve kütüphane filtresinde görünen tür listesi. Silinen türler mevcut serilerden otomatik kalkmaz.
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {(rec.genres?.length ? rec.genres : GENRES).map((g) => (
+              <span
+                key={g}
+                className="flex items-center gap-1.5 rounded-full border border-line bg-bg-soft px-2.5 py-1 text-xs"
+              >
+                {g}
+                <button
+                  type="button"
+                  aria-label={`${g} türünü sil`}
+                  onClick={() =>
+                    set("genres", (rec.genres?.length ? rec.genres : GENRES).filter((x) => x !== g))
+                  }
+                  className="text-muted transition-colors hover:text-red-500"
+                >
+                  ✕
+                </button>
+              </span>
+            ))}
+          </div>
+          <div className="mt-2 flex gap-2">
+            <input
+              value={newGenre}
+              onChange={(e) => setNewGenre(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const g = newGenre.trim();
+                  const cur = rec.genres?.length ? rec.genres : GENRES;
+                  if (g && !cur.includes(g)) set("genres", [...cur, g]);
+                  setNewGenre("");
+                }
+              }}
+              placeholder="Yeni tür (Enter ile ekle)"
+              className={input}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const g = newGenre.trim();
+                const cur = rec.genres?.length ? rec.genres : GENRES;
+                if (g && !cur.includes(g)) set("genres", [...cur, g]);
+                setNewGenre("");
+              }}
+              className="shrink-0 rounded-lg border border-line bg-bg-soft px-3 text-sm hover:border-accent"
+            >
+              Ekle
+            </button>
+          </div>
         </div>
 
         <div>
