@@ -13,6 +13,7 @@
   --text-muted: #9aa1b3;
   --accent: #e11d48;
   --dot: rgba(244, 241, 232, 0.13);
+  --dot-strong: rgba(244, 241, 232, 0.22);
   --panel-shadow: rgba(0, 0, 0, 0.5);
 }
 
@@ -26,6 +27,7 @@
   --text: #1a1a20;
   --text-muted: #5c6070;
   --dot: rgba(26, 26, 32, 0.16);
+  --dot-strong: rgba(26, 26, 32, 0.28);
   --panel-shadow: rgba(26, 26, 32, 0.22);
 }
 
@@ -89,6 +91,21 @@ body {
 .halftone {
   background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
   background-size: 9px 9px;
+}
+
+/* manga hız çizgileri — hero fonu */
+.speedlines {
+  background-image: repeating-conic-gradient(
+    from 0deg at 85% 30%,
+    transparent 0deg 4deg,
+    var(--dot) 4deg 4.6deg
+  );
+}
+
+/* arkaplan dev kontur yazı */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--dot-strong, var(--dot));
 }
 
 /* mono etiket (bölüm no, tarih, eyebrow) */

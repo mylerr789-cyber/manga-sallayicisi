@@ -29,17 +29,21 @@ export default async function HomePage() {
 
   const seen = new Set<string>();
   const latest: { manga: Manga; chapterNumber: number }[] = [];
+  const latestByManga: Record<string, number> = {};
   for (const ch of latestChapters) {
     const m = ch.expand?.manga;
-    if (!m || seen.has(m.id)) continue;
+    if (!m) continue;
+    if (!(m.id in latestByManga)) latestByManga[m.id] = ch.number;
+    if (seen.has(m.id)) continue;
     seen.add(m.id);
-    latest.push({ manga: m, chapterNumber: ch.number });
-    if (latest.length >= 12) break;
+    if (latest.length < 12) latest.push({ manga: m, chapterNumber: ch.number });
   }
 
   return (
     <div className="space-y-12">
-      {featured.length > 0 && <HeroSlider mangas={featured.slice(0, 5)} />}
+      {featured.length > 0 && (
+        <HeroSlider mangas={featured.slice(0, 5)} latestByManga={latestByManga} />
+      )}
 
       <section>
         <div className="mb-5 flex items-end justify-between">
