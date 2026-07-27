@@ -108,6 +108,53 @@ body {
   -webkit-text-stroke: 1.5px var(--dot-strong, var(--dot));
 }
 
+/* ── hero mürekkep perdesi geçişi ─────────────────── */
+.ink-wipe {
+  position: absolute;
+  inset: -2%;
+  z-index: 20;
+  background: linear-gradient(105deg, transparent 0%, var(--accent) 12%, #101010 55%, var(--accent) 100%);
+  transform: translateX(-115%) skewX(-8deg);
+  pointer-events: none;
+}
+.ink-wipe-in {
+  animation: wipe-in 0.42s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+.ink-wipe-out {
+  animation: wipe-out 0.45s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+@keyframes wipe-in {
+  from { transform: translateX(-115%) skewX(-8deg); }
+  to   { transform: translateX(0) skewX(-8deg); }
+}
+@keyframes wipe-out {
+  from { transform: translateX(0) skewX(-8deg); }
+  to   { transform: translateX(115%) skewX(-8deg); }
+}
+
+/* perde açılırken içerik hafif sağdan yerine oturur */
+.hero-enter > * {
+  animation: hero-enter 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.hero-enter > *:nth-child(2) {
+  animation-delay: 0.08s;
+}
+@keyframes hero-enter {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-wipe-in,
+  .ink-wipe-out,
+  .hero-enter > * {
+    animation: none;
+  }
+  .ink-wipe {
+    display: none;
+  }
+}
+
 /* mono etiket (bölüm no, tarih, eyebrow) */
 .eyebrow {
   font-family: var(--font-plexmono), monospace;

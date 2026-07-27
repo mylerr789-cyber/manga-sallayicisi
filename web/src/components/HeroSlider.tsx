@@ -14,18 +14,19 @@ export default function HeroSlider({
   latestByManga?: Record<string, number>;
 }) {
   const [i, setI] = useState(0);
-  const [fade, setFade] = useState(false);
+  const [wipe, setWipe] = useState<"idle" | "in" | "out">("idle");
 
   const go = useCallback(
     (idx: number) => {
-      if (idx === i) return;
-      setFade(true);
+      if (idx === i || wipe !== "idle") return;
+      setWipe("in"); // perde içeriği örter
       setTimeout(() => {
-        setI(idx);
-        setFade(false);
-      }, 180);
+        setI(idx); // perde tam kapalıyken içerik değişir
+        setWipe("out"); // perde açılır
+        setTimeout(() => setWipe("idle"), 450);
+      }, 420);
     },
-    [i]
+    [i, wipe]
   );
 
   useEffect(() => {
@@ -57,9 +58,12 @@ export default function HeroSlider({
         {m.status ? STATUS_LABELS[m.status] : "Seri"}
       </div>
 
+      {/* mürekkep perdesi — geçişte içeriği süpürür */}
+      <div aria-hidden className={`ink-wipe ${wipe !== "idle" ? `ink-wipe-${wipe}` : ""}`} />
+
       <div
-        className={`relative flex flex-col gap-7 p-6 transition-opacity duration-200 sm:flex-row sm:p-9 ${
-          fade ? "opacity-0" : "opacity-100"
+        className={`relative flex flex-col gap-7 p-6 sm:flex-row sm:p-9 ${
+          wipe === "out" ? "hero-enter" : ""
         }`}
       >
         {/* kapak: iki katmanlı baskı provası */}
