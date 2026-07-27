@@ -222,8 +222,22 @@ function ChapterForm({
       else await pb.collection("chapters").create(fd);
       onSaved();
     } catch (ex) {
-      const msg = ex instanceof Error ? ex.message : "Kayıt başarısız";
-      setErr(`Hata: ${msg} (aynı seride aynı bölüm numarası olamaz)`);
+      const rd = (ex as { response?: { data?: Record<string, { code?: string; message?: string }> } })?.response?.data;
+      if (rd) {
+        const tr: Record<string, string> = {
+          validation_not_unique: "aynı seride bu bölüm numarası zaten var",
+          validation_invalid_format: "geçersiz format",
+          validation_required: "boş bırakılamaz",
+        };
+        const parts = Object.entries(rd).map(([k, v]) => {
+          const t = v?.code ? tr[v.code] || v.message : v?.message || "geçersiz";
+          return k === "number" ? `bölüm no: ${t}` : `${k}: ${t}`;
+        });
+        setErr(`Hata: ${parts.join(" · ")}`);
+      } else {
+        const msg = ex instanceof Error ? ex.message : "Kayıt başarısız";
+        setErr(`Hata: ${msg}`);
+      }
     } finally {
       setBusy(false);
       setProgress("");

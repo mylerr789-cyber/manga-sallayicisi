@@ -12,10 +12,11 @@ function slugify(s: string): string {
     .replace(/I/g, "i")
     .toLowerCase()
     .normalize("NFD") // aksanları ayır (ç→c+̧, ğ→g+̆ ...)
-    .replace(/[\u0300-\u036f]/g, "") // birleşik işaretleri at
+    .replace(/[̀-ͯ]/g, "") // birleşik işaretleri at
     .replace(/ı/g, "i")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^a-z0-9]+/g, "-") // ardışık olmayan karakterleri tek tireye
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-"); // çift tireyi tekle
 }
 
 export default function SeriesAdmin() {
@@ -173,9 +174,16 @@ function MangaForm({
     setBusy(true);
     setErr("");
     try {
+      // slug'ı her zaman normalize et (kullanıcı elle Türkçe/karakterli yazmış olsa bile)
+      const finalSlug = slugify(slug || title);
+      if (!finalSlug) {
+        setErr("Hata: Geçerli bir slug üretilemedi. Başlıkta en az bir a–z harfi olmalı.");
+        setBusy(false);
+        return;
+      }
       const fd = new FormData();
       fd.set("title", title);
-      fd.set("slug", slug || slugify(title));
+      fd.set("slug", finalSlug);
       fd.set("description", description);
       fd.set("author", author);
       fd.set("artist", artist);
@@ -190,13 +198,23 @@ function MangaForm({
       else await pb.collection("mangas").create(fd);
       onSaved();
     } catch (ex) {
-      // PB alan hatalarını oku (ör. slug: validation_not_unique)
-      const rd = (ex as { response?: { data?: Record<string, { message?: string }> } })?.response?.data;
-      const fields = rd
-        ? Object.entries(rd).map(([k, v]) => `${k}: ${v?.message || "geçersiz"}`).join(" · ")
-        : "";
-      const msg = ex instanceof Error ? ex.message : "Kayıt başarısız";
-      setErr(`Hata: ${fields || msg}`);
+      // PB alan hatalarını oku + Türkçe'ye çevir
+      const rd = (ex as { response?: { data?: Record<string, { code?: string; message?: string }> } })?.response?.data;
+      if (rd) {
+        const tr: Record<string, string> = {
+          validation_not_unique: "zaten kullanımda (başka bir seride var)",
+          validation_invalid_format: "gereken format: sadece a-z 0-9 ve -",
+          validation_required: "boş bırakılamaz",
+        };
+        const parts = Object.entries(rd).map(([k, v]) => {
+          const t = v?.code ? tr[v.code] || v.message : v?.message || "geçersiz";
+          return k === "slug" ? `slug ${t}` : `${k}: ${t}`;
+        });
+        setErr(`Hata: ${parts.join(" · ")}`);
+      } else {
+        const msg = ex instanceof Error ? ex.message : "Kayıt başarısız";
+        setErr(`Hata: ${msg}`);
+      }
     } finally {
       setBusy(false);
     }
