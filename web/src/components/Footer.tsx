@@ -35,12 +35,6 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
           </div>
         )}
         <p className="text-sm text-muted">{settings.footer_text}</p>
-        <a
-          href="/admin"
-          className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted/60 transition-colors hover:text-accent"
-        >
-          Yönetim
-        </a>
       </div>
     </footer>
   );
