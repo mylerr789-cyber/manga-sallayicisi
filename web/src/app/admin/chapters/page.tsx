@@ -31,7 +31,7 @@ export default function ChaptersAdmin() {
       const pb = pbClient();
       setChapters(
         await pb.collection("chapters").getFullList<Chapter>({
-          filter: pb.filter("manga = {:id}", { id: mangaId }),
+          filter: pb.filter("manga.id = {:mid}", { mid: mangaId }),
           sort: "-number",
         })
       );

@@ -13,7 +13,7 @@ async function getData(chapterId: string) {
       .collection("chapters")
       .getOne<Chapter>(chapterId, { expand: "manga" });
     const siblings = await pb.collection("chapters").getFullList<Chapter>({
-      filter: pb.filter("manga = {:id}", { id: chapter.manga }),
+      filter: pb.filter("manga.id = {:mid}", { mid: chapter.manga }),
       sort: "number",
       fields: "id,number,title",
     });

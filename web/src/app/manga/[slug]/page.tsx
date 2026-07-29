@@ -49,9 +49,9 @@ export default async function MangaPage({
   try {
     const pb = newPB();
     chapters = await pb.collection("chapters").getFullList<Chapter>({
-      filter: pb.filter("manga = {:id}", { id: manga.id }),
-      sort: "-number",
-      fields: "id,number,title,created,collectionId",
+      filter: pb.filter("manga.id = {:mid}", { mid: manga.id }),
+      sort: "number",
+      fields: "id,number,title",
     });
   } catch {}
 

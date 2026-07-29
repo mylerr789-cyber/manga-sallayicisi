@@ -1,5 +1,5 @@
 /// <reference path="../pb_data/types.d.ts" />
-// Türleri hardcoded listeden ayarlanabilir settings alanına taşır.
+// Turleri settings'ten ozelleştirilebilir hale getir.
 migrate(
   (app) => {
     const col = app.findCollectionByNameOrId("settings");
@@ -12,7 +12,6 @@ migrate(
     );
     app.save(col);
 
-    // mevcut kayda varsayılan listeyi yaz
     const records = app.findRecordsByFilter("settings", "id != ''", "", 1, 0);
     if (records.length) {
       records[0].set("genres", [
